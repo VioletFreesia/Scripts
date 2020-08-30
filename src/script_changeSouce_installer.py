@@ -22,7 +22,8 @@ def main():
     console.info('system release version: %s' % version_name)
     # 默认修改为阿里源
     console.log('---> modify sources list <---', with_header=True)
-    source = '''deb http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
+    source = '''
+deb http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
@@ -38,8 +39,8 @@ deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted univer
     sources = open("/etc/apt/sources.list", "w")
     sources.write(source)
     sources.close()
-    console.success('---> modify success <---')
     console.log(source)
+    console.success('---> modify success <---')
 
 
 if __name__ == '__main__':
