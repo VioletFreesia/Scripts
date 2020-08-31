@@ -2,6 +2,7 @@
 # ^_^ coding: UTF-8 ^_^
 # -_- author: violetfreesia -_-
 
+import console
 from urllib import request
 
 """
@@ -10,16 +11,13 @@ os_limit: None
 """
 
 
-def file(url, filename):
-    """
-    下载文件
-    :param url: 文件url
-    :param filename: 下载后的文件名
-    :return: 下载成功返回True, 否则返回False
-    """
-    try:
-        request.urlretrieve(url, filename)
-    except:
-        return False
-    else:
-        return True
+def save_file(url, filename=None, user_agent=None):
+    req = request.Request(url)
+    if not user_agent:
+        user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0'
+        req.add_header('User-Agent', user_agent)
+    if not filename:
+        filename = url.split('/')[-1]
+    with request.urlopen(req) as net_file:
+        with open(filename, 'wb') as f:
+            f.write(net_file.read())
