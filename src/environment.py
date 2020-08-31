@@ -32,7 +32,7 @@ def username(file=__file__):
 def is_root(with_log=True):
     if not os.getuid() == 0:
         if with_log:
-            console.error('Permission denied: please use sudo or root')
+            console.error('Permission denied: Please use the administrator to execute the script')
         return False
     else:
         return True

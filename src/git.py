@@ -38,16 +38,16 @@ def install(name=None, email=None):
         if not apt.install('git'):
             return False
     else:
-        console.info('---> git already exist <---')
+        console.info('git has been installed')
     if name and email:
-        console.info('---> start autoconfig <---')
+        console.info('git is being automatically configured')
     else:
-        console.info('---> manual config <---')
+        console.info('configure git')
         name = input('please input your name: ')
         email = input('please input your email')
     process.call('git config --global user.name %s' % name)
     process.call('git config --global user.email %s' % email)
-    console.success('---> config finish <---')
+    console.success('configuration complete')
     return True
 
 
@@ -59,13 +59,44 @@ def clone(url, target):
     :return: 克隆成功返回True, 否则返回False
     """
     if not check():
-        console.error('please first install git')
+        console.error('please install git first')
         return False
     command = 'git clone %s %s' % (url, target)
-    console.info('---> start clone <---')
+    console.info('start cloning')
     if process.call(command):
-        console.success('---> finish clone <---')
+        console.success('clone complete')
         return True
     else:
-        console.error('---> clone failed <---')
+        console.error('clone failed')
+        return False
+
+
+def push():
+    if not check():
+        console.error('please install git first')
+        return False
+    command = 'git push'
+    console.info('pushing')
+    if process.call(command):
+        console.success('push successfully')
+        return True
+    else:
+        console.error('push failed, please push manually')
+        return False
+
+
+def commit(message, filename=None):
+    if not check():
+        console.error('please first install git')
+        return False
+    if filename:
+        command = f"git commit -o {filename} -m {message}"
+    else:
+        command = f"git commit -am {message}"
+    console.info('submitting')
+    if process.call(command):
+        console.success('submit complete')
+        return True
+    else:
+        console.error('submission failed')
         return False

@@ -11,7 +11,7 @@ import authority
 
 """
 os_limit: Ubuntu
-自动安装并配置zsh终端
+description: 自动安装并配置zsh终端
 """
 
 
@@ -27,10 +27,10 @@ def main():
     if not git.clone('git://github.com/robbyrussell/oh-my-zsh.git', '%s/.oh-my-zsh' % home):
         return
     if not authority.chown('%s/.oh-my-zsh' % home, environment.username(), hideout=True):
-        console.warning('---> change dir owner fail <---')
+        console.warning('failed to change file owner')
     process.call('cp %s/.oh-my-zsh/templates/zshrc.zsh-template %s/.zshrc' % (home, home))
     if process.call('chsh -s /bin/zsh'):
-        console.success('---> set default shell to zsh success <---')
+        console.success('zsh has been set as the default terminal')
 
 
 if __name__ == '__main__':

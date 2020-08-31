@@ -25,26 +25,26 @@ def install(package_name, hideout=False, with_log=True):
     """
     command = 'apt install %s' % package_name
     if with_log:
-        console.info('---> start install %s <---' % package_name)
-        console.log('---> installing <---', console.Color.Yellow)
+        console.info('start install %s' % package_name)
+        console.log('installing', console.Color.Yellow)
     if not hideout:
         call_result = process.call(command)
         if with_log:
             if call_result:
-                console.success('---> install %s success <---' % package_name)
+                console.success('install %s success' % package_name)
             else:
-                console.error('---> install %s failed <---' % package_name)
+                console.error('install %s failed' % package_name)
         return call_result
     else:
         subprocess = process.run(command, encoding='utf-8')
         if subprocess.returncode:
             if with_log:
-                console.error('---> install %s failed <---' % package_name)
+                console.error('install %s failed' % package_name)
             console.log(subprocess.stderr, console.Color.Red)
             return False
         else:
             if with_log:
-                console.success('---> install %s success <---' % package_name)
+                console.success('install %s success' % package_name)
             return True
 
 

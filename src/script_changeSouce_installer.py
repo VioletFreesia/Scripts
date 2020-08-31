@@ -7,13 +7,14 @@ import environment
 
 """
 os_limit: Ubuntu
+description: 自动修改Ubuntu软件镜像为阿里源
 """
 
 
 def main():
     if not environment.is_root():
         return
-    console.log('---> reading system release version <---', with_header=True)
+    console.log('reading system version', with_header=True)
     lsb_release = open("/etc/lsb-release")
     lsb_release.readline()
     lsb_release.readline()
@@ -21,7 +22,7 @@ def main():
     lsb_release.close()
     console.info('system release version: %s' % version_name)
     # 默认修改为阿里源
-    console.log('---> modify sources list <---', with_header=True)
+    console.log('modifying software source', with_header=True)
     source = '''
 deb http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
@@ -40,7 +41,7 @@ deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted univer
     sources.write(source)
     sources.close()
     console.log(source)
-    console.success('---> modify success <---')
+    console.success('successfully modified')
 
 
 if __name__ == '__main__':
