@@ -3,40 +3,70 @@
 # -_- author: violetfreesia -_-
 
 import os
+import sys
+import json
 import argparse
 from urllib import request
 from enum import Enum, unique
-import json
 
 
 def main(args):
-    if not args.r:
-        error('please enter "-r"')
+    # if not os.getuid() == 0:
+    #     error('Permission denied: Please use the administrator to execute the script')
+    #     return
+    if not args:
+        error('未接收到任何参数')
         return
-    url = f'https://github.com/VioletFreesia/Scripts/releases/download/v0.0.2/script_{args.r}_installer.zip'
-    zip_name = f'script_{args.r}_installer.zip'
-    if not download(url, zip_name):
-        print('脚本下载失败')
+    info('加载脚本资源')
+    release_info = load_release_info()
+    if not release_info:
+        error('加载脚本信息失败')
+        return
+    if args.v is not None:
+        info('script version: %s' % release_info['version'])
+        return
+    if args.l is not None:
+        log('所有可执行的脚本:', Color.Cyan)
+        for script, description in release_info['scripts'].items():
+            log(f'{script}:  {description}', Color.Yellow)
+        return
+    if args.r:
+        if args.r not in release_info['scripts'].keys():
+            error("脚本无效, 请键入'-l'查看所有可用脚本")
+            return
+        if args.s:
+            info(f'修改脚本源为: {args.s}')
+        info(f'run: {args.r} {args.a}')
+    else:
+        if args.a is not None or args.s:
+            error("请先设置'-r'参数")
 
 
 def args_parse():
     parser = argparse.ArgumentParser()
     # 增加解析参数
-    parser.add_argument('-r', help='运行一个脚本, 后跟脚本名')
-    parser.add_argument('-a', help='为运行的脚本传入参数', nargs='*')
-    parser.add_argument('-v', help='显示版本信息', nargs='*')
-    return parser.parse_args()
+    parser.add_argument('-r', help='execute a script')
+    parser.add_argument('-l', help='show the list of all executable scripts', nargs='*')
+    parser.add_argument('-a', help='parameters required to execute a script', nargs='*')
+    parser.add_argument('-v', help='display version information and exit', nargs='*')
+    parser.add_argument('-s', help='Set script source, default gitee, can be set to github',
+                        choices=['github', 'gitee'])
+    if len(sys.argv) > 1:
+        return parser.parse_args()
+    return False
 
 
-def download(url, filename):
-    """
-    下载文件
-    :param url: 文件url
-    :param filename: 下载后的文件名
-    :return: 下载成功返回True, 否则返回False
-    """
+def save_file(url, filename=None, user_agent=None):
     try:
-        request.urlretrieve(url, filename)
+        req = request.Request(url)
+        if not user_agent:
+            user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0'
+            req.add_header('User-Agent', user_agent)
+        if not filename:
+            filename = url.split('/')[-1]
+        with request.urlopen(req) as net_file:
+            with open(filename, 'wb') as f:
+                f.write(net_file.read())
     except:
         return False
     else:
@@ -47,12 +77,11 @@ def load_release_info():
     if not os.path.exists('./temp'):
         os.mkdir('./temp')
     release_info_name = './temp/release_info.json'
-    release_info_url = 'https://github.com/VioletFreesia/Scripts/releases/download/v0.0.2' \
-                       '/script_changeSouce_installer.zip '
-    if not download(release_info_url, release_info_name):
+    release_info_url = 'https://gitee.com/VioletFreesia/scripts/raw/master/release_info.json'
+    if not save_file(release_info_url, release_info_name):
         error('加载脚本信息失败')
         return False
-    with open('./release_info.json', 'r', encoding='utf8') as file:
+    with open(release_info_name, 'r', encoding='utf8') as file:
         return json.load(file)
 
 
@@ -123,6 +152,4 @@ def __colorize(string, mode: Mode = Mode.Bold, fc: Color = Color.White, bc: Colo
 
 
 if __name__ == '__main__':
-    # main(args_parse())
-    release_info = load_release_info()
-    log(release_info)
+    main(args_parse())
