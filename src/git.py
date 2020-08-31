@@ -71,11 +71,20 @@ def clone(url, target):
         return False
 
 
-def push():
+def push(remote=None, branch='master'):
+    """
+    推送本地仓库到远端
+    :param remote: 远端名
+    :param branch: 远端分支名
+    :return: 成功返回True否则返回False
+    """
     if not check():
         console.error('please install git first')
         return False
-    command = 'git push'
+    if not remote:
+        command = 'git push'
+    else:
+        command = f'git push -u {remote} {branch}'
     console.info('pushing')
     if process.call(command):
         console.success('push successfully')
