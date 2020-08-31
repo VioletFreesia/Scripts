@@ -30,7 +30,7 @@ def main():
     console.success('packaged')
     generate_release_info('../release_info.json')
     now = datetime.now().strftime('project_release:%Y-%m-%dT%H:%M:%S')
-    if git.commit(now, '../release_info.json'):
+    if git.commit(now):
         git.push('origin')
         git.push('gitee')
 
