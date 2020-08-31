@@ -1,0 +1,1 @@
+{"version": "v0.0.2", "scripts": {"changeSouce": "自动修改Ubuntu软件镜像为阿里源", "zsh": "自动安装并配置zsh终端"}}
