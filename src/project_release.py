@@ -31,7 +31,8 @@ def main():
     generate_release_info('../release_info.json')
     now = datetime.now().strftime('project_release:%Y-%m-%dT%H:%M:%S')
     if git.commit(now, '../release_info.json'):
-        git.push()
+        git.push('origin')
+        git.push('gitee')
 
 
 def imported_package(filename):
