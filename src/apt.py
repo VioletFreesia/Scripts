@@ -3,7 +3,7 @@
 # -_- author: violetfreesia -_-
 
 import process
-import console
+from console import Console
 
 """
 os_limit: Ubuntu
@@ -25,26 +25,26 @@ def install(package_name, hideout=False, with_log=True):
     """
     command = 'apt install %s' % package_name
     if with_log:
-        console.info('start install %s' % package_name)
-        console.log('installing', console.Color.Yellow)
+        Console.info('start install %s' % package_name)
+        Console.log('installing', Console.Color.Yellow)
     if not hideout:
         call_result = process.call(command)
         if with_log:
             if call_result:
-                console.success('install %s success' % package_name)
+                Console.success('install %s success' % package_name)
             else:
-                console.error('install %s failed' % package_name)
+                Console.error('install %s failed' % package_name)
         return call_result
     else:
         subprocess = process.run(command, encoding='utf-8')
         if subprocess.returncode:
             if with_log:
-                console.error('install %s failed' % package_name)
-            console.log(subprocess.stderr, console.Color.Red)
+                Console.error('install %s failed' % package_name)
+            Console.log(subprocess.stderr, Console.Color.Red)
             return False
         else:
             if with_log:
-                console.success('install %s success' % package_name)
+                Console.success('install %s success' % package_name)
             return True
 
 

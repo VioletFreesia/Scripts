@@ -2,7 +2,6 @@
 # ^_^ coding: UTF-8 ^_^
 # -_- author: violetfreesia -_-
 
-import console
 from urllib import request
 
 """

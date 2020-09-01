@@ -3,31 +3,35 @@
 # -_- author: violetfreesia -_-
 
 import os
-import console
 import compress
 import jsoner
 import git
+from console import Console
 from datetime import datetime
 
 """
 os_limit: None
 用于打包本项目的脚本
+开始-->查找本目录下以 'scripts' 开头的文件-->递归读取每个查找到的文件依赖的所有文件
+-->每个查找到的文件与其所依赖的文件(加上公共依赖文件)分别打包-->更新release_info.json-->推送到github和gitee
 """
 
 
 def main():
-    console.info('start analyzing script dependencies')
+    Console.info('start analyzing script dependencies')
     scripts = {}
+    # 公共依赖
+    public_dependence = ['Console.py']
     for filename in os.listdir('./'):
         if filename.startswith('script'):
             scripts[filename.replace('.py', '')] = all_needed_packages(filename)
-    console.success('dependency analysis is complete')
-    console.info('start packing')
+    Console.success('dependency analysis is complete')
+    Console.info('start packing')
     if not os.path.exists('../release'):
         os.mkdir('../release')
     for filename in scripts:
         compress.files_zip(f'../release/{filename}', scripts[filename])
-    console.success('packaged')
+    Console.success('packaged')
     generate_release_info('../release_info.json')
     now = datetime.now().strftime('project_release:%Y-%m-%dT%H:%M:%S')
     if git.commit(now):
@@ -53,9 +57,10 @@ def imported_package(filename):
     return packages
 
 
-def all_needed_packages(filename):
+def all_needed_packages(filename, public_dependence=None):
     """
     根据传入的文件名递归分析该文件所依赖的本项目的所有文件
+    :param public_dependence: 公共依赖列表
     :param filename: 待分析的文件名
     :return: 返回所依赖的所有文件名构成的列表
     """
@@ -71,6 +76,9 @@ def all_needed_packages(filename):
     find(imported_package(filename))
     temp = list(result)
     temp.append(filename)
+    if public_dependence:
+        for dependence in public_dependence:
+            temp.append(dependence)
     return temp
 
 
@@ -114,17 +122,26 @@ def generate_release_info(output: str):
     :param output: 输出文件名
     :return: None
     """
-    console.info('generating version information')
+    Console.info('generating version information')
     release_info = {}
     scripts = {}
     for filename in os.listdir('./'):
         if filename.startswith('script'):
-            scripts[filename.split('_')[1]] = get_description(filename)
+            scripts[filename.split('_')[1]] = {'description': get_description(filename)}
     release_info['version'] = convert_to_version(len(scripts))
+    for script in scripts:
+        gitee = f'https://gitee.com/VioletFreesia/scripts/raw/master/release/' \
+                f'script_{script}_installer.zip'
+        scripts[script]['gitee'] = gitee
+        github = f'https://github.com/VioletFreesia/Scripts/releases/download/' \
+                 f'{release_info["version"]}/script_{script}_installer.zip'
+        scripts[script]['github'] = github
     release_info['scripts'] = scripts
+
     jsoner.to_json_file(release_info, output)
-    console.success(f'generated and saved in: {output}')
+    Console.success(f'generated and saved in: {output}')
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    generate_release_info('../release_info.json')

@@ -2,9 +2,9 @@
 # ^_^ coding: UTF-8 ^_^
 # -_- author: violetfreesia -_-
 
-import console
 import apt
 import process
+from console import Console
 
 """
 os_limit: Ubuntu
@@ -38,16 +38,16 @@ def install(name=None, email=None):
         if not apt.install('git'):
             return False
     else:
-        console.info('git has been installed')
+        Console.info('git has been installed')
     if name and email:
-        console.info('git is being automatically configured')
+        Console.info('git is being automatically configured')
     else:
-        console.info('configure git')
+        Console.info('configure git')
         name = input('please input your name: ')
         email = input('please input your email')
     process.call('git config --global user.name %s' % name)
     process.call('git config --global user.email %s' % email)
-    console.success('configuration complete')
+    Console.success('configuration complete')
     return True
 
 
@@ -59,15 +59,15 @@ def clone(url, target):
     :return: 克隆成功返回True, 否则返回False
     """
     if not check():
-        console.error('please install git first')
+        Console.error('please install git first')
         return False
     command = 'git clone %s %s' % (url, target)
-    console.info('start cloning')
+    Console.info('start cloning')
     if process.call(command):
-        console.success('clone complete')
+        Console.success('clone complete')
         return True
     else:
-        console.error('clone failed')
+        Console.error('clone failed')
         return False
 
 
@@ -79,33 +79,33 @@ def push(remote=None, branch='master'):
     :return: 成功返回True否则返回False
     """
     if not check():
-        console.error('please install git first')
+        Console.error('please install git first')
         return False
     if not remote:
         command = 'git push'
     else:
         command = f'git push -u {remote} {branch}'
-    console.info('pushing')
+    Console.info('pushing')
     if process.call(command):
-        console.success('push successfully')
+        Console.success('push successfully')
         return True
     else:
-        console.error('push failed, please push manually')
+        Console.error('push failed, please push manually')
         return False
 
 
 def commit(message, filename=None):
     if not check():
-        console.error('please first install git')
+        Console.error('please first install git')
         return False
     if filename:
         command = f"git commit -o {filename} -m {message}"
     else:
         command = f"git commit -am {message}"
-    console.info('submitting')
+    Console.info('submitting')
     if process.call(command):
-        console.success('submit complete')
+        Console.success('submit complete')
         return True
     else:
-        console.error('submission failed')
+        Console.error('submission failed')
         return False

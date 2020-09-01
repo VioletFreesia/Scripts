@@ -3,7 +3,7 @@
 # -_- author: violetfreesia -_-
 
 import os
-import console
+from console import Console
 
 """
 os_limit: Linux
@@ -32,7 +32,7 @@ def username(file=__file__):
 def is_root(with_log=True):
     if not os.getuid() == 0:
         if with_log:
-            console.error('Permission denied: Please use the administrator to execute the script')
+            Console.error('Permission denied: Please use the administrator to execute the script')
         return False
     else:
         return True
