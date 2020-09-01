@@ -8,6 +8,7 @@ import json
 import shutil
 import zipfile
 import argparse
+import subprocess
 from urllib import request
 from enum import Enum, unique
 
@@ -42,8 +43,11 @@ def main(args):
             Console.error("脚本无效, 请键入'-l'查看所有可用脚本")
             return
         if args.s:
-            Console.info(f'修改脚本源为: {args.s}')
-        Console.info(f'run: {args.r} {args.a}')
+            script_url = release_info['scripts'][args.r][args.s]
+        else:
+            script_url = release_info['scripts'][args.r]['gitee']
+        if load_script(args.r, script_url):
+            run(args.r, args.a)
     else:
         if args.a is not None or args.s:
             Console.error("请先设置'-r'参数")
@@ -115,8 +119,23 @@ def load_script(name, url):
         Console.success('脚本加载完成')
         return True
     else:
-        Console.info('下载脚本失败')
+        Console.error('脚本下载失败')
         return False
+
+
+def run(name, args=None, use_python2=False):
+    python = 'python3'
+    if use_python2:
+        python = 'python'
+    script_path = f'.temp/{name}/script_{name}_installer.py'
+    if args:
+        argv = ' '.join(args).replace('_', '-')
+        command = f'{python} {script_path} {argv}'
+    else:
+        command = f'{python} {script_path}'
+    Console.info(f'正在执行脚本: {name}')
+    if subprocess.call(command):
+        Console.error(f"脚本运行出错,尝试运行: 'sudo {python} {script_path}'")
 
 
 class Console:

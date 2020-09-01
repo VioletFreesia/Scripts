@@ -6,6 +6,7 @@ import os
 import compress
 import jsoner
 import git
+import shutil
 from console import Console
 from datetime import datetime
 
@@ -24,14 +25,16 @@ def main():
     public_dependence = ['Console.py']
     for filename in os.listdir('./'):
         if filename.startswith('script'):
-            scripts[filename.replace('.py', '')] = all_needed_packages(filename)
+            scripts[filename.replace('.py', '')] = all_needed_packages(filename, public_dependence)
     Console.success('dependency analysis is complete')
     Console.info('start packing')
     if not os.path.exists('../release'):
+        shutil.rmtree('../release')
         os.mkdir('../release')
     for filename in scripts:
         compress.files_zip(f'../release/{filename}', scripts[filename])
     Console.success('packaged')
+    git.add('./release')
     generate_release_info('../release_info.json')
     now = datetime.now().strftime('project_release:%Y-%m-%dT%H:%M:%S')
     if git.commit(now):
@@ -143,5 +146,4 @@ def generate_release_info(output: str):
 
 
 if __name__ == '__main__':
-    # main()
-    generate_release_info('../release_info.json')
+    main()
