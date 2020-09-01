@@ -34,7 +34,7 @@ def main():
     for filename in scripts:
         compress.files_zip(f'../release/{filename}', scripts[filename])
     Console.success('packaged')
-    git.add('./release')
+    git.add('../release')
     generate_release_info('../release_info.json')
     now = datetime.now().strftime('project_release:%Y-%m-%dT%H:%M:%S')
     if git.commit(now):
