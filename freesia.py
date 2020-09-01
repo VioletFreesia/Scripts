@@ -14,9 +14,9 @@ from enum import Enum, unique
 
 
 def main(args):
-    # if not os.getuid() == 0:
-    #     error('Permission denied: Please use the administrator to execute the script')
-    #     return
+    if not os.getuid() == 0:
+        Console.error('Permission denied: Please use the administrator to execute the script')
+        return
     if not args:
         Console.error('未接收到任何参数')
         return
