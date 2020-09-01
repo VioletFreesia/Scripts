@@ -132,7 +132,7 @@ def run(name, args=None, use_python2=False):
     else:
         command = f'{python} {script_path}'
     Console.info(f'executing script: {name}')
-    if subprocess.call(command):
+    if subprocess.call(command, shell=True):
         Console.error(f"script running error, try to run: 'sudo {python} {script_path}'")
 
 
