@@ -71,9 +71,10 @@ def clone(url, target):
         return False
 
 
-def push(remote=None, branch='master'):
+def push(remote=None, branch='master', hideout=False):
     """
     推送本地仓库到远端
+    :param hideout: 是否隐藏推送输出
     :param remote: 远端名
     :param branch: 远端分支名
     :return: 成功返回True否则返回False
@@ -86,12 +87,19 @@ def push(remote=None, branch='master'):
     else:
         command = f'git push -u {remote} {branch}'
     Console.info('pushing')
-    if process.call(command):
+    if hideout:
+        subprocess = process.run(command)
+        if not subprocess.returncode:
+            exec_result = True
+        else:
+            exec_result = False
+    else:
+        exec_result = process.call(command)
+    if exec_result:
         Console.success('push successfully')
-        return True
     else:
         Console.error('push failed, please push manually')
-        return False
+    return exec_result
 
 
 def commit(message, filename=None):
