@@ -43,9 +43,9 @@ def main(args):
             Console.error("脚本无效, 请键入'-l'查看所有可用脚本")
             return
         if args.github:
-            script_url = release_info['scripts'][args.r]['github']
+            script_url = release_info['scripts'][args.run]['github']
         else:
-            script_url = release_info['scripts'][args.r]['gitee']
+            script_url = release_info['scripts'][args.run]['gitee']
         if load_script(args.run, script_url):
             run(args.run, args.a)
     else:
