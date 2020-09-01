@@ -22,7 +22,7 @@ def main():
     Console.info('start analyzing script dependencies')
     scripts = {}
     # 公共依赖
-    public_dependence = ['Console.py']
+    public_dependence = ['console.py']
     for filename in os.listdir('./'):
         if filename.startswith('script'):
             scripts[filename.replace('.py', '')] = all_needed_packages(filename, public_dependence)
