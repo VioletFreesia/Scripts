@@ -95,6 +95,12 @@ def push(remote=None, branch='master'):
 
 
 def commit(message, filename=None):
+    """
+    提交更改
+    :param message: 提交信息
+    :param filename: 默认提交所有已经更改的文件, 可指定某一文件
+    :return: 提交成功返回True, 否则返回False
+    """
     if not check():
         Console.error('please first install git')
         return False
@@ -109,3 +115,23 @@ def commit(message, filename=None):
     else:
         Console.error('submission failed')
         return False
+
+
+def add(file=None):
+    """
+    将文件加入git管理
+    :param file: 默认添加git目录下的所有东西, 可指定添加某一目录或某一文件
+    :return: None
+    """
+    if not check():
+        Console.error('please first install git')
+        return False
+    if file:
+        command = f'git add {file}'
+    else:
+        command = 'git add .'
+    Console.info('submitting')
+    if not process.call(command):
+        Console.error('file or directory does not exist')
+        return False
+    return True
