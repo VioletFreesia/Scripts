@@ -18,29 +18,29 @@ def main(args):
         Console.error('Permission denied: Please use the administrator to execute the script')
         return
     if not args:
-        Console.error('未接收到任何参数')
+        Console.error('no parameters received')
         return
     if args.clean:
-        Console.info('正在清理缓存')
+        Console.info('clearing cache')
         shutil.rmtree('.temp', ignore_errors=True)
-        Console.success('清理完成')
+        Console.success('clean up')
         return
-    Console.info('加载脚本信息')
+    Console.info('load script information')
     release_info = load_release_info()
     if not release_info:
-        Console.error('加载脚本信息失败')
+        Console.error('failed to load script information')
         return
     if args.version:
         Console.info('script version: %s' % release_info['version'])
         return
     if args.list:
-        Console.log('所有可执行的脚本:', Console.Color.Cyan)
+        Console.log('all executable scripts:', Console.Color.Cyan)
         for name, infos in release_info['scripts'].items():
             Console.log(f'{name}:  {infos["description"]}', Console.Color.Yellow)
         return
     if args.run:
         if args.run not in release_info['scripts'].keys():
-            Console.error("脚本无效, 请键入'-l'查看所有可用脚本")
+            Console.error("The script is invalid, please type'-l' to view all available scripts")
             return
         if args.github:
             script_url = release_info['scripts'][args.run]['github']
@@ -50,7 +50,7 @@ def main(args):
             run(args.run, args.a)
     else:
         if args.a is not None or args.github:
-            Console.error("请先设置'-r'参数")
+            Console.error("please set the r parameter first")
 
 
 def args_parse():
@@ -99,26 +99,25 @@ def load_release_info():
     release_info_name = '.temp/release_info.json'
     release_info_url = 'https://gitee.com/VioletFreesia/scripts/raw/master/release_info.json'
     if not save_file(release_info_url, release_info_name):
-        Console.error('加载脚本信息失败')
         return False
     with open(release_info_name, 'r', encoding='utf8') as file:
         return json.load(file)
 
 
 def load_script(name, url):
-    Console.info('正在下载脚本')
+    Console.info('downloading script')
     file_name = f'.temp/{name}.zip'
     script_dir = f'.temp/{name}'
     if save_file(url, file_name):
         if not os.path.exists(script_dir):
             os.mkdir(script_dir)
-        Console.info('正在解压脚本')
+        Console.info('unpacking script')
         unzip(file_name, script_dir)
         os.remove(file_name)
-        Console.success('脚本加载完成')
+        Console.success('script loaded')
         return True
     else:
-        Console.error('脚本下载失败')
+        Console.error('script download failed')
         return False
 
 
@@ -132,9 +131,9 @@ def run(name, args=None, use_python2=False):
         command = f'{python} {script_path} {argv}'
     else:
         command = f'{python} {script_path}'
-    Console.info(f'正在执行脚本: {name}')
+    Console.info(f'executing script: {name}')
     if subprocess.call(command):
-        Console.error(f"脚本运行出错,尝试运行: 'sudo {python} {script_path}'")
+        Console.error(f"script running error, try to run: 'sudo {python} {script_path}'")
 
 
 class Console:
