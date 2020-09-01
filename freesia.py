@@ -20,7 +20,7 @@ def main(args):
     if not args:
         Console.error('未接收到任何参数')
         return
-    if args.c is not None:
+    if args.clean:
         Console.info('正在清理缓存')
         shutil.rmtree('.temp', ignore_errors=True)
         Console.success('清理完成')
@@ -30,39 +30,38 @@ def main(args):
     if not release_info:
         Console.error('加载脚本信息失败')
         return
-    if args.v is not None:
+    if args.version:
         Console.info('script version: %s' % release_info['version'])
         return
-    if args.l is not None:
+    if args.list:
         Console.log('所有可执行的脚本:', Console.Color.Cyan)
         for name, infos in release_info['scripts'].items():
             Console.log(f'{name}:  {infos["description"]}', Console.Color.Yellow)
         return
-    if args.r:
-        if args.r not in release_info['scripts'].keys():
+    if args.run:
+        if args.run not in release_info['scripts'].keys():
             Console.error("脚本无效, 请键入'-l'查看所有可用脚本")
             return
-        if args.s:
-            script_url = release_info['scripts'][args.r][args.s]
+        if args.github:
+            script_url = release_info['scripts'][args.r]['github']
         else:
             script_url = release_info['scripts'][args.r]['gitee']
-        if load_script(args.r, script_url):
-            run(args.r, args.a)
+        if load_script(args.run, script_url):
+            run(args.run, args.a)
     else:
-        if args.a is not None or args.s:
+        if args.a is not None or args.github:
             Console.error("请先设置'-r'参数")
 
 
 def args_parse():
     parser = argparse.ArgumentParser()
     # 增加解析参数
-    parser.add_argument('-r', help='execute a script')
-    parser.add_argument('-l', help='show the list of all executable scripts', nargs='*')
-    parser.add_argument('-c', help='clear script cache', nargs='*')
+    parser.add_argument('-r', '--run', help='execute a script')
+    parser.add_argument('-l', '--list', help='show the list of all executable scripts', action="store_true")
+    parser.add_argument('-c', '--clean', help='clear script cache', action="store_true")
+    parser.add_argument('-v', '--version', help='show version information', action="store_true")
+    parser.add_argument('-g', '--github', help='use github for script download, default gitee', action="store_true")
     parser.add_argument('-a', help='parameters required to execute a script', nargs='*')
-    parser.add_argument('-v', help='display version information and exit', nargs='*')
-    parser.add_argument('-s', help='Set script source, default gitee, can be set to github',
-                        choices=['github', 'gitee'])
     if len(sys.argv) > 1:
         return parser.parse_args()
     return False
@@ -102,7 +101,7 @@ def load_release_info():
     if not save_file(release_info_url, release_info_name):
         Console.error('加载脚本信息失败')
         return False
-    with open('release_info.json', 'r', encoding='utf8') as file:
+    with open(release_info_name, 'r', encoding='utf8') as file:
         return json.load(file)
 
 
