@@ -31,7 +31,7 @@ def main():
     process.call('cp %s/.oh-my-zsh/templates/zshrc.zsh-template %s/.zshrc' % (home, home))
     if not authority.chown('%s/.zshrc' % home, environment.username(), hideout=True):
         Console.warning('failed to change file owner')
-    if process.call('chsh -s /bin/zsh'):
+    if process.call('chsh -s  `which zsh`'):
         Console.success('zsh has been set as the default terminal')
 
 
