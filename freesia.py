@@ -127,7 +127,7 @@ def run(name, args=None, use_python2=False):
         python = 'python'
     script_path = f'.temp/{name}/script_{name}.py'
     if args:
-        argv = ' '.join(args).replace('_', '-')
+        argv = ' '.join(args).replace('+', '-')
         command = f'{python} {script_path} {argv}'
     else:
         command = f'{python} {script_path}'

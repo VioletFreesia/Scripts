@@ -134,10 +134,10 @@ def generate_release_info(output: str):
     release_info['version'] = convert_to_version(len(scripts))
     for script in scripts:
         gitee = f'https://gitee.com/VioletFreesia/scripts/raw/master/release/' \
-                f'script_{script}_installer.zip'
+                f'script_{script}.zip'
         scripts[script]['gitee'] = gitee
         github = f'https://github.com/VioletFreesia/Scripts/releases/download/' \
-                 f'{release_info["version"]}/script_{script}_installer.zip'
+                 f'{release_info["version"]}/script_{script}.zip'
         scripts[script]['github'] = github
     release_info['scripts'] = scripts
 
