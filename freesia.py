@@ -125,7 +125,7 @@ def run(name, args=None, use_python2=False):
     python = 'python3'
     if use_python2:
         python = 'python'
-    script_path = f'.temp/{name}/script_{name}_installer.py'
+    script_path = f'.temp/{name}/script_{name}.py'
     if args:
         argv = ' '.join(args).replace('_', '-')
         command = f'{python} {script_path} {argv}'

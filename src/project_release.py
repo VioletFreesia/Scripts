@@ -130,7 +130,7 @@ def generate_release_info(output: str):
     scripts = {}
     for filename in os.listdir('./'):
         if filename.startswith('script'):
-            scripts[filename.split('_')[1]] = {'description': get_description(filename)}
+            scripts[filename.split('_')[1].replace('.py', '')] = {'description': get_description(filename)}
     release_info['version'] = convert_to_version(len(scripts))
     for script in scripts:
         gitee = f'https://gitee.com/VioletFreesia/scripts/raw/master/release/' \
